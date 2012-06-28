@@ -1,0 +1,22 @@
+{
+  "author": "Dave Eddy <dave@daveeddy.com> (http://www.daveeddy.com)",
+  "name": "etc-passwd",
+  "description": "Interface to read a standard Unix passwd and group file-format",
+  "version": "0.0.0",
+  "repository": {
+    "url": "https://github.com/bahamas10/node-etc-passwd.git",
+    "type": "git"
+  },
+  "main": "index.js",
+  "scripts": {
+    "test": "for f in examples/*.js; do node \"$f\" > /dev/null || exit 1; done"
+  },
+  "dependencies": {
+    "lazylines": "= 1.0.0"
+  },
+  "devDependencies": {},
+  "optionalDependencies": {},
+  "engines": {
+    "node": "*"
+  }
+}
