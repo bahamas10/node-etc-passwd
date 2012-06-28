@@ -117,11 +117,13 @@ passwd.getUsers(function(users) {
 });
 ```
 
-    [
-    {"username":"nobody","password":"*","uid":-2,"gid":-2,"comments":"Unprivileged User","home":"/var/empty","shell":"/usr/bin/false"},
-    {"username":"root","password":"*","uid":0,"gid":0,"comments":"System Administrator","home":"/var/root","shell":"/bin/sh"},
-    ...
-    ]
+``` json
+[
+{"username":"nobody","password":"*","uid":-2,"gid":-2,"comments":"Unprivileged User","home":"/var/empty","shell":"/usr/bin/false"},
+{"username":"root","password":"*","uid":0,"gid":0,"comments":"System Administrator","home":"/var/root","shell":"/bin/sh"},
+...
+]
+```
 
 ### passwd.getUser()
 
@@ -135,7 +137,15 @@ passwd.getUser({'username':'root'}, function(err, user) {
 ```
 
 ``` json
-{"username":"root","password":"*","uid":0,"gid":0,"comments":"System Administrator","home":"/var/root","shell":"/bin/sh"}
+{
+  "username": "root",
+  "password": "*",
+  "uid": 0,
+  "gid": 0,
+  "comments": "System Administrator",
+  "home": "/var/root",
+  "shell": "/bin/sh"
+}
 ```
 
 ---
@@ -172,12 +182,13 @@ passwd.getGroups(function(groups) {
 });
 ```
 
-    [
-    {"groupname":"nobody","password":"*","gid":-2,"users":[]}
-    {"groupname":"nogroup","password":"*","gid":-1,"users":[]}
-    ...
-    ]
-
+``` json
+[
+{"groupname":"nobody","password":"*","gid":-2,"users":[]}
+{"groupname":"nogroup","password":"*","gid":-1,"users":[]}
+...
+]
+```
 
 ### passwd.getGroup()
 
@@ -189,7 +200,14 @@ passwd.getGroup({'groupname':'wheel'}, function(err, group) {
 ```
 
 ``` json
-{"groupname":"wheel","password":"*","gid":0,"users":["root"]}
+{
+  "groupname": "wheel",
+  "password": "*",
+  "gid": 0,
+  "users": [
+    "root"
+  ]
+}
 ```
 
 License
