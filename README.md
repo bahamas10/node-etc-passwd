@@ -1,3 +1,4 @@
+[![build status](https://secure.travis-ci.org/bahamas10/node-etc-passwd.png)](http://travis-ci.org/bahamas10/node-etc-passwd)
 passwd(4) and group(4)
 ======================
 
