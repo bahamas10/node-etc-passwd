@@ -18,8 +18,6 @@ var passwd = require('etc-passwd');
 Functions
 ---------
 
-- passwd.getUsers(
-
 ### passwd.getUsers([file])
 
 Get all users found in `file`. This functions returns an instance of `EventEmitter`.
