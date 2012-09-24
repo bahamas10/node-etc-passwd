@@ -2,6 +2,7 @@
 
 var passwd = require('../');
 
-passwd.getUsers(function(users) {
+passwd.getUsers(function(err, users) {
+  if (err) throw err;
   console.log(JSON.stringify(users));
 });

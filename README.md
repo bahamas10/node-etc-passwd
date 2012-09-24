@@ -1,19 +1,15 @@
-passwd(4) and group(4)
-======================
+passwd(4), shadow(4) and group(4)
+=================================
 
-Interface to read a standard Unix passwd and group file-format
+Interface to read a standard Unix passwd, shadow and group file-format
 
 Install
 ------
-
-Install locally to use as a module
 
     npm install etc-passwd
 
 Usage
 -----
-
-as a module
 
 ``` js
 var passwd = require('etc-passwd');
@@ -21,6 +17,8 @@ var passwd = require('etc-passwd');
 
 Functions
 ---------
+
+- passwd.getUsers(
 
 ### passwd.getUsers([file])
 
@@ -36,7 +34,7 @@ Returns an object whenever a user is found
 
 Called when the file is done being read
 
-### passwd.getUsers([file], callback(users))
+### passwd.getUsers([file], callback(err, users))
 
 If a callback is supplied as the last argument, the entire file will be read at once,
 and the results will be returned as a list of user objects.  This is good for convenience,
@@ -67,7 +65,7 @@ Returns an object whenever a group is found
 
 Called when the file is done being read
 
-### passwd.getGroups([file], callback(groups))
+### passwd.getGroups([file], callback(err, groups))
 
 If a callback is supplied as the last argument, the entire file will be read at once,
 and the results will be returned as a list of group objects.  This is good for convenience,
@@ -80,6 +78,37 @@ but can produce unnecessary overhead on systems with a lot of groups.
 Look for a specific groupname in `file` (defaults to `/etc/group`).  This will use the
 EventEmitter to avoid loading the entire file into memory and return the callback
 when the group is found.  If the group is not found `err` will be set and `group` will be null.
+You can specify any attribute to look for as the first argument.
+
+---
+
+### passwd.getShadows([file])
+
+Get all shadow entries found in `file`. This functions returns an instance of `EventEmitter`.
+
+The optional parameter `file` defaults to `/etc/shadow`
+
+#### .on('shadow', function(shadow) {})
+
+Returns an object whenever a shadow entry is found
+
+#### .on('end', function() {})
+
+Called when the file is done being read
+
+### passwd.getShadows([file], callback(err, shadows))
+
+If a callback is supplied as the last argument, the entire file will be read at once,
+and the results will be returned as a list of shadow objects.  This is good for convenience,
+but can produce unnecessary overhead on systems with a lot of shadow entries.
+
+---
+
+### passwd.getShadow({'username':'root'}, [file], callback(err, shadow))
+
+Look for a specific username in `file` (defaults to `/etc/shadow`).  This will use the
+EventEmitter to avoid loading the entire file into memory and return the callback
+when the shadow-entry is found.  If the shadow entry is not found `err` will be set and `shadow` will be null.
 You can specify any attribute to look for as the first argument.
 
 Example

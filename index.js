@@ -18,10 +18,18 @@ function parse_file(type, item, file, callback) {
     callback = file;
     file = undefined;
   }
-  file = file || (type === 'group') ? '/etc/group' : '/etc/passwd';
 
-  // Create the eventEmitter and streams
-  var eventEmitter = new events.EventEmitter(),
+  if (!file) {
+    switch (type) {
+      case 'group': file = '/etc/group'; break;
+      case 'passwd': file = '/etc/passwd'; break;
+      case 'shadow': file = '/etc/shadow'; break;
+      default: return callback(new Error('Type not supported')); break;
+    }
+  }
+
+  // Create the event_emitter and streams
+  var event_emitter = new events.EventEmitter(),
       file_stream = fs.createReadStream(file),
       line_stream = new ll.LineReadStream(file_stream);
 
@@ -31,24 +39,24 @@ function parse_file(type, item, file, callback) {
     // Ignore comments and blank lines
     if (line.length && line[0] !== '#') {
       // Emit the user / group
-      eventEmitter.emit(type, extract[type](line));
+      event_emitter.emit(type, extract[type](line));
     }
   });
   line_stream.on('end', function() {
     // No more lines, forward the 'end' event
-    eventEmitter.emit('end');
+    event_emitter.emit('end');
   });
 
   if (callback) {
     // A call back was supplied, load it all up in memory and return it
     var ret = [];
-    eventEmitter.on(type, function(obj) {
+    event_emitter.on(type, function(obj) {
       if (item) {
         // Looking for a specific item, check to see if we found it
         for (var key in item) {
           if (obj[key] === item[key]) {
             // Item found! kill the event listeners and return the obj
-            eventEmitter.removeAllListeners();
+            event_emitter.removeAllListeners();
             return callback(null, obj);
           }
         }
@@ -58,16 +66,16 @@ function parse_file(type, item, file, callback) {
       }
     });
 
-    eventEmitter.on('end', function() {
+    event_emitter.on('end', function() {
       if (item) {
         // Item not found :(
-        return callback('Not found');
+        return callback(new Error('Not found'));
       }
-      callback(ret);
+      callback(null, ret);
     });
   }
 
-  return eventEmitter;
+  return event_emitter;
 }
 
 // Get Users
@@ -88,6 +96,16 @@ module.exports.getGroups = function(file, callback) {
 // Get Group
 module.exports.getGroup = function(group, file, callback) {
   return parse_file('group', group, file, callback);
+};
+
+// Get Shadows
+module.exports.getShadows = function(file, callback) {
+  return parse_file('shadow', null, file, callback);
+};
+
+// Get Shadow
+module.exports.getShadow = function(shadow, file, callback) {
+  return parse_file('shadow', shadow, file, callback);
 };
 
 /**
@@ -116,5 +134,23 @@ extract.group = function(line) {
     'password': line_split[1],
     'gid': +line_split[2],
     'users': (line_split[3]) ? line_split[3].split(',') : []
+  };
+};
+
+/**
+ * Given a line from group, return a group object
+ */
+extract.shadow = function(line) {
+  line_split = line.split(':');
+  return {
+    'username': line_split[0],
+    'password': line_split[1],
+    'lastchg': +line_split[2],
+    'min': +line_split[3],
+    'max': +line_split[4],
+    'warn': +line_split[5],
+    'inactive': +line_split[6],
+    'expire': +line_split[7],
+    'flag': line_split[8]
   };
 };
