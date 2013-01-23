@@ -22,7 +22,7 @@ function parse_file(type, item, file, callback) {
   if (!file) {
     switch (type) {
       case 'group': file = '/etc/group'; break;
-      case 'passwd': file = '/etc/passwd'; break;
+      case 'user': file = '/etc/passwd'; break;
       case 'shadow': file = '/etc/shadow'; break;
       default: return callback(new Error('Type not supported')); break;
     }
